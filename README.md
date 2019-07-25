@@ -23,12 +23,16 @@ a fast data render based on jQuery  which could be convenient for show data in h
 ```html
 <div class="info">
     <img render-src="imageIcon"> <span
-        render-html="result.name[0].pname"></span>
+        render-html="seven_days[0].test[0].haha"></span> <span
+        render-html="uid"></span>
     <ul>
-        <li render-loop="xname in result.name"><span render-item="xname"
+        <li render-loop="xname in scg"><span render-item="xname"
+            render-html="this"></span></li>
+    </ul>
+    <ul>
+        <li render-loop="day in result.name"><span render-item="day"
             render-html="xmodel"></span></li>
     </ul>
-    <span render-attr="userid=uid" render-html="weather"></span>
 </div>
 ```
 #### js code
@@ -46,17 +50,11 @@ var data = {
             xmodel : "gagaga"
         } ]
     },
-    scg : [ {
-        xmodel : "lalala"
-    }, {
-        xmodel : "hahaha"
-    }, {
-        xmodel : "gagaga"
-    } ],
+    scg : [ "阿凡达", "安徽的", "哈发动" ],
     seven_days : [ {
-        weather : "应",
+        weather : "嘎达",
         test : [ {
-            'haha' : '嘿嘿'
+            'haha' : '嘿嘿1'
         }, {
             'haha' : '嘿嘿2'
         }, {
@@ -83,39 +81,24 @@ var data = {
     } ],
     uid : 1987
 };
-
-$(".info").renderValues(data);
+$("body").renderValues(data);
 ```
 #desc
-1.所有的数据展示都是在某一个标签内,支持数据标签的嵌套
+1.所有的数据展示都需要包含在某一个标签内,支持包括数组在内的数据标签的嵌套,例如seven_days[0].test[0].haha
 
 all kind of data must be show at one html element
 
 sample
 ```html
-<span render-html="result.name[0].pname"></span>
+<li render-loop="day in result.name"><span render-item="day"
+            render-html="xmodel"></span></li>
 ```
 if the type is loop, the child element should be surrounded with a div
 
-render-loop循环类型的循环，需要套一个子元素进行数据渲染
+render-loop循环类型的循环，需要套一个子元素进行数据渲染,render-loop不支持嵌套,render-item子项内无法再使用render-loop
 
 ### right
 ```html
 <li render-loop="xname in result.name"><span render-item="xname"
             render-html="xmodel"></span></li>
 ```
-
-1. type list which can be render
-<pre>
-render-html, 
-render-src, 
-render-value, 
-render-href, 
-render-loop, 
-render-attr(self defined property:render-attr="userid=uid")
-render-key(this should provide a render-fun property ,please read exmples)
-</pre>
-
-### note
-Jrender don't support table now
-

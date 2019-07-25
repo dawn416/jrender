@@ -1,13 +1,8 @@
-/**
- * Created by reco on 15/11/5.
- * 简单json数据展示，满足常见需求
- */
-
 var Render = {
     renderDomValues : function (dom, values, callbacks) {
         dom.each(function (index, ele) {
             this.renderProperty(ele, values, callbacks);
-            var chidren = $(ele).find("*");
+            var chidren = $(ele).find('*');
             if (chidren.length == 0) {
                 return;
             }
@@ -60,7 +55,7 @@ var Render = {
             var tail = $(child);
             $(func(values, dataNode)).each(function (index, valuex) {
                 var xNode = $parent.clone(true);
-                xNode.find("*").each(function () {
+                xNode.find('*').each(function () {
                     $(this).renderValues(valuex, callbacks);
                 });
                 tail.after(xNode);
@@ -73,8 +68,13 @@ var Render = {
         var keys;
         if (key = $(child).attr('render-html')) {
             if (renderItem && !success) {
-                keys = parseName(key);
-                var htmls = func(values, keys);
+                var htmls;
+                if (key == 'this') {
+                    htmls = values;
+                } else {
+                    keys = parseName(key);
+                    htmls = func(values, keys);
+                }
                 $(child).html(htmls);
                 $(child).attr('render-success', 'true');
             } else if (!renderItem) {
@@ -84,38 +84,56 @@ var Render = {
         }
         if (key = $(child).attr('render-src')) {
             if (renderItem && !success) {
-                keys = parseName(key);
-                $(child).attr("src", func(values, keys));
+                var srcs;
+                if (key == 'this') {
+                    srcs = values;
+                } else {
+                    keys = parseName(key);
+                    srcs = func(values, keys);
+                }
+                $(child).attr('src', srcs);
                 $(child).attr('render-success', 'true');
             } else if (!renderItem) {
                 keys = parseName(key);
-                $(child).attr("src", func(values, keys));
+                $(child).attr('src', func(values, keys));
             }
         }
         if (key = $(child).attr('render-href')) {
             if (renderItem && !success) {
-                keys = parseName(key);
-                $(child).attr("href", func(values, keys));
+                var hrefs;
+                if (key == 'this') {
+                    hrefs = values;
+                } else {
+                    keys = parseName(key);
+                    hrefs = func(values, keys);
+                }
+                $(child).attr('href', hrefs);
                 $(child).attr('render-success', 'true');
             } else if (!renderItem) {
                 keys = parseName(key);
-                $(child).attr("href", func(values, keys));
+                $(child).attr('href', func(values, keys));
             }
         }
         if (key = $(child).attr('render-value')) {
             if (renderItem && !success) {
-                keys = parseName(key);
-                $(child).attr("value", func(values, keys));
+                var valuex;
+                if (key == 'this') {
+                    valuex = values;
+                } else {
+                    keys = parseName(key);
+                    valuex = func(values, keys);
+                }
+                $(child).attr('value', valuex);
                 $(child).attr('render-success', 'true');
             } else if (!renderItem) {
                 keys = parseName(key);
-                $(child).attr("value", func(values, keys));
+                $(child).attr('value', func(values, keys));
             }
         }
     },
     renderHtmlValues : function (html, values, callbacks) {
-        var dom = $("<div>" + html + "</div>");
-        var chidren = dom.find("*");
+        var dom = $('<div>' + html + '</div>');
+        var chidren = dom.find('*');
         if (chidren.length == 0) {
             return;
         }

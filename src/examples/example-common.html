@@ -4,23 +4,27 @@
 <meta charset="UTF-8">
 <title>例子</title>
 <script src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
-<script src="../jrender.js"></script>
+<script src="../js/jrender.js"></script>
 </head>
 <body>
 	<div class="info">
 		<img render-src="imageIcon"> <span
-			render-html="result.name[0].pname"></span>
+			render-html="seven_days[0].test[0].haha"></span> <span
+			render-html="uid"></span>
 		<ul>
-			<li render-loop="xname in result.name"><span render-item="xname"
+			<li render-loop="xname in scg"><span render-item="xname"
+				render-html="this"></span></li>
+		</ul>
+		<ul>
+			<li render-loop="day in result.name"><span render-item="day"
 				render-html="xmodel"></span></li>
 		</ul>
-		<span render-attr="userid=uid" render-html="weather"></span>
 	</div>
 	<div>
 		<table class="info2">
 			<tr>
-				<td render-loop="day in seven_days"><span render-item="day"
-					render-html="weather"></span></td>
+				<td render-loop="day in result.name"><span render-item="day"
+					render-html="xmodel"></span></td>
 			</tr>
 		</table>
 	</div>
@@ -38,17 +42,11 @@
                     xmodel : "gagaga"
                 } ]
             },
-            scg : [ {
-                xmodel : "lalala"
-            }, {
-                xmodel : "hahaha"
-            }, {
-                xmodel : "gagaga"
-            } ],
+            scg : [ "阿凡达", "安徽的", "哈发动" ],
             seven_days : [ {
-                weather : "应",
+                weather : "嘎达",
                 test : [ {
-                    'haha' : '嘿嘿'
+                    'haha' : '嘿嘿1'
                 }, {
                     'haha' : '嘿嘿2'
                 }, {
@@ -75,11 +73,7 @@
             } ],
             uid : 1987
         };
-        $("body").renderValues(data, {
-            'get_weather' : function (item, value) {
-                $(item).html(value + 1);
-            }
-        });
+        $("body").renderValues(data);
     </script>
 </body>
 </html>
