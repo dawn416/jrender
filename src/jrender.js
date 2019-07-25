@@ -3,94 +3,130 @@
  * 简单json数据展示，满足常见需求
  */
 
-
 var Render = {
-    renderDomValues:function(dom,values,callbacks){
-
-        var key = '';
-        dom.each(function(index,ele) {
-            this.renderProperty(ele,values,callbacks);
+    renderDomValues : function (dom, values, callbacks) {
+        dom.each(function (index, ele) {
+            this.renderProperty(ele, values, callbacks);
             var chidren = $(ele).find("*");
-            if(chidren.length==0) {
+            if (chidren.length == 0) {
                 return;
             }
-            for(var i=0;i<chidren.length;i++) {
+            for (var i = 0; i < chidren.length; i++) {
                 var child = chidren[i];
-                this.renderProperty(child,values,callbacks);
+                this.renderProperty(child, values, callbacks);
             }
         }.bind(this));
     },
-    renderProperty:function(child,values,callbacks){
+    renderProperty : function (child, values, callbacks) {
         var key = '';
-        if(key = $(child).attr('render-key')){
+        if (key = $(child).attr('render-key')) {
             var fun = '';
-            if(fun = $(child).attr('render-fun')) {
+            if (fun = $(child).attr('render-fun')) {
                 var f = callbacks[fun];
-                if(f) {
+                if (f) {
                     f(child, values[key]);
                 }
             }
         }
-
-
-        if(key = $(child).attr('render-html')) {
-            $(child).html(values[key]);
-        }
-        if(key = $(child).attr('render-src')) {
-            $(child).attr("src",values[key]);
-        }
-        if(key = $(child).attr('render-href')) {
-            $(child).attr("href",values[key]);
-        }
-        if(key = $(child).attr('render-value')) {
-            $(child).val(values[key]);
-        }
-        if(key= $(child).attr('render-loop')) {
-            if(!$(child).attr('row-html')) {
-                //取第一个子元素作为循环
-                var html = $(child).children()[0].outerHTML;
-                $(child).attr('row-html',encodeURIComponent(html));
-            } else {
-                html = decodeURIComponent($(child).attr('row-html'));
+        function func(data, arr) {
+            if (arr.length != 0) {
+                var item = arr.shift();
+                var result = data[item];
+                if (arr.length == 0) {
+                    return result;
+                } else {
+                    return func(result, arr);
+                }
             }
-            $(child).html('');
-            $(values[key]).each(function(index,value) {
-                if(typeof value!='object') {
-                    var tmp = {
-                        'self':value
-                    }
-                    value = tmp;
-                }
-                for(var childKey in value) {
-                    values[key+'.'+childKey] = value[childKey];
-                }
-                $(child).append(this.renderHtmlValues(html,values,callbacks));
-            }.bind(this));
         }
-        if(key= $(child).attr('render-attr')) {
-            var attrs = key;
-            key = attrs.split('=')[1];
-            var attr = attrs.split('=')[0];
-            $(child).attr(attr,values[key]);
+        function parseName(key) {
+            var keys = key.split('.');
+            for (var i = 0; i < keys.length; i++) {
+                var item = keys[i];
+                if (item.indexOf('[') >= 0) {
+                    var a = item.indexOf('[');
+                    var b = item.indexOf(']');
+                    var x = item.substring(0, a).trim();
+                    var y = item.substring(a + 1, b).trim();
+                    keys.splice(i, 1, x, y);
+                }
+            }
+            return keys;
+        }
+        if (key = $(child).attr('render-loop')) {
+            var dataName = key.trim().substring(key.indexOf('in ') + 3);
+            var dataNode = parseName(dataName);
+            var $parent = $(child);
+            var tail = $(child);
+            $(func(values, dataNode)).each(function (index, valuex) {
+                var xNode = $parent.clone(true);
+                xNode.find("*").each(function () {
+                    $(this).renderValues(valuex, callbacks);
+                });
+                tail.after(xNode);
+                tail = xNode;
+            }.bind(this));
+            $parent.remove();
+        }
+        var success = $(child).attr('render-success');
+        var renderItem = $(child).attr('render-item');
+        var keys;
+        if (key = $(child).attr('render-html')) {
+            if (renderItem && !success) {
+                keys = parseName(key);
+                var htmls = func(values, keys);
+                $(child).html(htmls);
+                $(child).attr('render-success', 'true');
+            } else if (!renderItem) {
+                keys = parseName(key);
+                $(child).html(func(values, keys));
+            }
+        }
+        if (key = $(child).attr('render-src')) {
+            if (renderItem && !success) {
+                keys = parseName(key);
+                $(child).attr("src", func(values, keys));
+                $(child).attr('render-success', 'true');
+            } else if (!renderItem) {
+                keys = parseName(key);
+                $(child).attr("src", func(values, keys));
+            }
+        }
+        if (key = $(child).attr('render-href')) {
+            if (renderItem && !success) {
+                keys = parseName(key);
+                $(child).attr("href", func(values, keys));
+                $(child).attr('render-success', 'true');
+            } else if (!renderItem) {
+                keys = parseName(key);
+                $(child).attr("href", func(values, keys));
+            }
+        }
+        if (key = $(child).attr('render-value')) {
+            if (renderItem && !success) {
+                keys = parseName(key);
+                $(child).attr("value", func(values, keys));
+                $(child).attr('render-success', 'true');
+            } else if (!renderItem) {
+                keys = parseName(key);
+                $(child).attr("value", func(values, keys));
+            }
         }
     },
-    renderHtmlValues:function(html,values,callbacks){
-        var key = '';
-        var dom = $("<div>"+html+"</div>");
+    renderHtmlValues : function (html, values, callbacks) {
+        var dom = $("<div>" + html + "</div>");
         var chidren = dom.find("*");
-        if(chidren.length==0) {
+        if (chidren.length == 0) {
             return;
         }
-        for(var i=0;i<chidren.length;i++) {
+        for (var i = 0; i < chidren.length; i++) {
             var child = chidren[i];
-            this.renderProperty(child,values,callbacks);
+            this.renderProperty(child, values, callbacks);
         }
         return dom.html();
     }
 };
 
-//我们可能还需要一个jQuery扩展来更方便的使用
-$.fn.renderValues = function(values,callbacks) {
-    Render.renderDomValues(this,values,callbacks);
+$.fn.renderValues = function (values, callbacks) {
+    Render.renderDomValues(this, values, callbacks);
 };
-

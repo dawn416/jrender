@@ -1,81 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>例子</title>
-    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
-    <script src="../jrender.js"></script>
+<meta charset="UTF-8">
+<title>例子</title>
+<script src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="../jrender.js"></script>
 </head>
 <body>
-<div class="info">
-    <img render-src="imageIcon">
-    <span render-html="weather"></span>
-    <ul render-loop="seven_days">
-        <li>
-            <span render-fun="get_weather" render-key="seven_days.weather"></span>
-            <ul render-loop="seven_days.test">
-                <li render-html="seven_days.test.haha"></li>
-            </ul>
-        </li>
-    </ul>
-    <span render-attr="userid=uid" render-html="weather"></span>
-</div>
-<script>
-    var data = {
-        weather: '晴',
-        imageIcon: 'http://img.tianqi.com/static/images/tianqibig/b1.png',
-        seven_days: [
-            {
-                weather: '阴',
-                test: [
-                    {
-                        'haha': '嘿嘿'
-                    },
-                    {
-                        'haha': '嘿嘿2'
-                    },
-                    {
-                        'haha': '嘿嘿3'
-                    }
-                ]
+	<div class="info">
+		<img render-src="imageIcon"> <span
+			render-html="result.name[0].pname"></span>
+		<ul>
+			<li render-loop="xname in result.name"><span render-item="xname"
+				render-html="xmodel"></span></li>
+		</ul>
+		<span render-attr="userid=uid" render-html="weather"></span>
+	</div>
+	<div>
+		<table class="info2">
+			<tr>
+				<td render-loop="day in seven_days"><span render-item="day"
+					render-html="weather"></span></td>
+			</tr>
+		</table>
+	</div>
+	<script>
+        var data = {
+            weather : '晴',
+            imageIcon : 'http://img.tianqi.com/static/images/tianqibig/b1.png',
+            result : {
+                id : 1,
+                name : [ {
+                    xmodel : "lalala"
+                }, {
+                    xmodel : "hahaha"
+                }, {
+                    xmodel : "gagaga"
+                } ]
             },
-            {
-                weather: '雾霾',
-                test: [
-                    {
-                        'haha': '嘿嘿4'
-                    },
-                    {
-                        'haha': '嘿嘿5'
-                    },
-                    {
-                        'haha': '嘿嘿6'
-                    }
-                ]
-            },
-            {
-                weather: '小雨',
-                test: [
-                    {
-                        'haha': '嘿嘿7'
-                    },
-                    {
-                        'haha': '嘿嘿8'
-                    },
-                    {
-                        'haha': '嘿嘿9'
-                    }
-                ]
+            scg : [ {
+                xmodel : "lalala"
+            }, {
+                xmodel : "hahaha"
+            }, {
+                xmodel : "gagaga"
+            } ],
+            seven_days : [ {
+                weather : "应",
+                test : [ {
+                    'haha' : '嘿嘿'
+                }, {
+                    'haha' : '嘿嘿2'
+                }, {
+                    'haha' : '嘿嘿3'
+                } ]
+            }, {
+                weather : "爱国",
+                test : [ {
+                    'haha' : '嘿嘿4'
+                }, {
+                    'haha' : '嘿嘿5'
+                }, {
+                    'haha' : '嘿嘿6'
+                } ]
+            }, {
+                weather : "火花",
+                test : [ {
+                    'haha' : '嘿嘿7'
+                }, {
+                    'haha' : '嘿嘿8'
+                }, {
+                    'haha' : '嘿嘿9'
+                } ]
+            } ],
+            uid : 1987
+        };
+        $("body").renderValues(data, {
+            'get_weather' : function (item, value) {
+                $(item).html(value + 1);
             }
-        ],
-
-        uid: 1987
-    };
-    $(".info").renderValues(data,{
-        'get_weather':function(item,value) {
-            $(item).html(value+1);
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

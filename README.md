@@ -11,75 +11,101 @@ a fast data render based on jQuery  which could be convenient for show data in h
 
 1.无需写无关的script块模板代码
 
-2.支持自定义回调用来处理特殊的数据绑定
+~~2.支持自定义回调用来处理特殊的数据绑定~~
 
 3.轻量无依赖，如果你不考虑angular，vue 这种大家伙
 
 4.特别适应于小页面开发，比如移动端
-
-# 劣势
-暂不支持table，下个版本即将支持
 
 # samples
 
 #### html code
 ```html
 <div class="info">
-	<span render-html="weather"></span>
-	<ul render-loop="seven_days">
-	        <li render-html="seven_days.weather"></li>
-	</ul>
+    <img render-src="imageIcon"> <span
+        render-html="result.name[0].pname"></span>
+    <ul>
+        <li render-loop="xname in result.name"><span render-item="xname"
+            render-html="xmodel"></span></li>
+    </ul>
+    <span render-attr="userid=uid" render-html="weather"></span>
 </div>
 ```
 #### js code
 ```javascript
 var data = {
-    weather:'sunshine',
-    seven_days:[
-        {
-            weather:'windy'
-        },
-        {
-            weather:'rainy'
-        },
-        {
-            weather:'cloud'
-        }
-    ]
+    weather : '晴',
+    imageIcon : 'http://img.tianqi.com/static/images/tianqibig/b1.png',
+    result : {
+        id : 1,
+        name : [ {
+            xmodel : "lalala"
+        }, {
+            xmodel : "hahaha"
+        }, {
+            xmodel : "gagaga"
+        } ]
+    },
+    scg : [ {
+        xmodel : "lalala"
+    }, {
+        xmodel : "hahaha"
+    }, {
+        xmodel : "gagaga"
+    } ],
+    seven_days : [ {
+        weather : "应",
+        test : [ {
+            'haha' : '嘿嘿'
+        }, {
+            'haha' : '嘿嘿2'
+        }, {
+            'haha' : '嘿嘿3'
+        } ]
+    }, {
+        weather : "爱国",
+        test : [ {
+            'haha' : '嘿嘿4'
+        }, {
+            'haha' : '嘿嘿5'
+        }, {
+            'haha' : '嘿嘿6'
+        } ]
+    }, {
+        weather : "火花",
+        test : [ {
+            'haha' : '嘿嘿7'
+        }, {
+            'haha' : '嘿嘿8'
+        }, {
+            'haha' : '嘿嘿9'
+        } ]
+    } ],
+    uid : 1987
 };
+
 $(".info").renderValues(data);
 ```
 #desc
-1.所有的数据展示都是在某一个标签内
+1.所有的数据展示都是在某一个标签内,支持数据标签的嵌套
 
 all kind of data must be show at one html element
 
 sample
 ```html
-<span render-html="username"></span>
+<span render-html="result.name[0].pname"></span>
 ```
 if the type is loop, the child element should be surrounded with a div
 
-循环类型的子循环，子元素的第一个元素，所以尽量套一个div进去
+render-loop循环类型的循环，需要套一个子元素进行数据渲染
 
 ### right
 ```html
-<div render-loop="seven_days">
-    <div>
-    	<span render-html="seven_days.temperature"></span>
-    	<span render-html="seven_days.weather"></span>
-    </div>
-</div>
-```
-#### wrong 
-```html
-<div render-loop="seven_days">
-    <span render-html="seven_days.temperature"></span>
-    <span render-html="seven_days.weather"></span>
-</div>
+<li render-loop="xname in result.name"><span render-item="xname"
+            render-html="xmodel"></span></li>
 ```
 
-2. type list which can be render
+1. type list which can be render
 <pre>
 render-html, 
 render-src, 
